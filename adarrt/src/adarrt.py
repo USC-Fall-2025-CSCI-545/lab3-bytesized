@@ -383,4 +383,3 @@ if __name__ == '__main__':
     parser.add_argument('--real', dest='is_sim', action='store_false')
     parser.set_defaults(is_sim=True)
     args = parser.parse_args()
-    main(args.is_sim)
