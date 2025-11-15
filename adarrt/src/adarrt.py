@@ -189,17 +189,14 @@ class AdaRRT():
 
         goal = self.goal.state
         bound_dist = 0.05
-        goal_upper_bound = np.array([val + bound_dist for val in goal])
-        goal_lower_bound = np.array([val - bound_dist for val in goal])
 
         # To sample unif[b, a), multiply the output of random_sample by (b-a) and add a
-        a = np.maximum(self.joint_lower_limits, goal_lower_bound)
-        b = np.minimum(self.joint_upper_limits, goal_upper_bound)
 
-        num_joint_limits = len(a)
-        random_sample_near_goal = a + (np.random.sample(num_joint_limits) * (b - a))
+        sample = np.random.random_sample(self.joint_lower_limits.size)
+        sample = sample * 0.1
+        sample = goal - bound_dist + sample
 
-        return random_sample_near_goal
+        return sample
 
     def dist(self, pose_1, pose_2):
         difference = pose_1 - pose_2
@@ -312,8 +309,9 @@ def main(is_sim):
     ada = adapy.Ada(is_sim)
 
     armHome = [-1.5, 3.22, 1.23, -2.19, 1.8, 1.2]
-    goalConfig = [-1.72, 4.44, 2.02, -2.04, 2.66, 1.39]
+    # goalConfig = [-1.72, 4.44, 2.02, -2.04, 2.66, 1.39]
     # goalConfig = [-2.37, 3.81, 1.31, -0.05, 0.78, 0.25]
+    goalConfig = [-8.65, 3.81, 1.31, -6.33, 13.34, 6.53]
     delta = 0.25
     eps = 0.2 # replace goal precision with 0.2
 
@@ -383,3 +381,4 @@ if __name__ == '__main__':
     parser.add_argument('--real', dest='is_sim', action='store_false')
     parser.set_defaults(is_sim=True)
     args = parser.parse_args()
+    main(args.is_sim)
