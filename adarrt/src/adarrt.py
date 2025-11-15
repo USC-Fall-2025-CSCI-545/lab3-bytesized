@@ -170,8 +170,8 @@ class AdaRRT():
         # FILL in your code here
 
         # To sample unif[b, a), multiply the output of random_sample by (b-a) and add a
-        a = np.array(self.joint_upper_limits)
-        b = np.array(self.joint_lower_limits)
+        a = np.array(self.joint_lower_limits)
+        b = np.array(self.joint_upper_limits)
 
         num_joint_limits = len(a)
         random_sample = a + (np.random.sample(num_joint_limits) * (b - a))
@@ -193,8 +193,8 @@ class AdaRRT():
         goal_lower_bound = np.array([val - bound_dist for val in goal])
 
         # To sample unif[b, a), multiply the output of random_sample by (b-a) and add a
-        a = np.array([max(pair) for pair in zip(self.joint_upper_limits, goal_upper_bound)])
-        b = np.array([min(pair) for pair in zip(self.joint_lower_limits, goal_lower_bound)])
+        a = np.array([min(pair) for pair in zip(self.joint_lower_limits, goal_lower_bound)])
+        b = np.array([max(pair) for pair in zip(self.joint_upper_limits, goal_upper_bound)])
 
         num_joint_limits = len(a)
         random_sample_near_goal = a + (np.random.sample(num_joint_limits) * (b - a))
@@ -375,7 +375,7 @@ def main(is_sim):
         print(str(t) + "seconds elapsed")
         raw_input('Press ENTER to execute trajectory and exit')
         ada.execute_trajectory(traj)
-        rospy.sleep(1.0)
+        rospy.sleep(10.0)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
