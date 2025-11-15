@@ -223,7 +223,7 @@ class AdaRRT():
                 continue
 
             dist_to_sample = self.dist(node.state, sample)
-            if dist_to_sample < smallest_dist:
+            if dist_to_sample <= smallest_dist:
                 smallest_dist = dist_to_sample
                 nearest_neighbor = node
 
@@ -312,9 +312,10 @@ def main(is_sim):
     ada = adapy.Ada(is_sim)
 
     armHome = [-1.5, 3.22, 1.23, -2.19, 1.8, 1.2]
-    goalConfig = [-1.72, 4.44, 2.02, -2.04, 2.66, 1.39]
+    # goalConfig = [-1.72, 4.44, 2.02, -2.04, 2.66, 1.39]
+    goalConfig = [-2.37, 3.81, 1.31, -0.05, 0.78, 0.25]
     delta = 0.25
-    eps = 1.0 # replace goal precision with 0.2
+    eps = 0.2 # replace goal precision with 0.2
 
     if is_sim:
         ada.set_positions(goalConfig)
@@ -359,7 +360,7 @@ def main(is_sim):
     if not is_sim:
         ada.start_trajectory_executor()
 
-    path = adaRRT.build()
+    path = adaRRT.build_near_goal()
     if path is not None:
         print("Path waypoints:")
         print(np.asarray(path))
@@ -368,7 +369,7 @@ def main(is_sim):
             waypoints.append((0.0 + i, waypoint))
 
         t0 = time.clock()
-        traj = ada.compute_joint_space_path( # replace function with compute_smooth_joint_space_path
+        traj = ada.compute_smooth_joint_space_path( # replace function with compute_smooth_joint_space_path
             ada.get_arm_state_space(), waypoints)
         t = time.clock() - t0
         print(str(t) + "seconds elapsed")
