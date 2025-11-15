@@ -115,6 +115,7 @@ class AdaRRT():
                 # FILL in your code here
 
                 new_node.children.append(self.goal)
+                self.goal.parent = new_node
                 path = self._trace_path_from_start()
 
                 return path
@@ -142,9 +143,7 @@ class AdaRRT():
         for k in range(self.max_iter):
             # FILL in your code here
 
-            samples = np.array([self._get_random_sample_near_goal(), self._get_random_sample()])
-            probs = np.array([0.2, 0.8])
-            rand_sample = np.random.choice(samples, p=probs)
+            rand_sample = self._get_random_sample_near_goal() if np.random.rand() < 0.2 else self._get_random_sample()
 
             nearest_neighbor = self._get_nearest_neighbor(rand_sample)
             new_node = self._extend_sample(rand_sample, nearest_neighbor)
@@ -152,10 +151,9 @@ class AdaRRT():
             if new_node and self._check_for_completion(new_node):
                 # FILL in your code here
 
-                path = self._trace_path_from_start(new_node)
-                path.append(self.goal.state)
-
                 new_node.children.append(self.goal)
+                self.goal.parent = new_node
+                path = self._trace_path_from_start()
 
                 return path
 
@@ -172,8 +170,8 @@ class AdaRRT():
         # FILL in your code here
 
         # To sample unif[b, a), multiply the output of random_sample by (b-a) and add a
-        a = np.array(self.joint_lower_limits)
-        b = np.array(self.joint_upper_limits)
+        a = np.array(self.joint_upper_limits)
+        b = np.array(self.joint_lower_limits)
 
         num_joint_limits = len(a)
         random_sample = a + (np.random.sample(num_joint_limits) * (b - a))
@@ -195,8 +193,8 @@ class AdaRRT():
         goal_lower_bound = np.array([val - bound_dist for val in goal])
 
         # To sample unif[b, a), multiply the output of random_sample by (b-a) and add a
-        a = np.array([min(pair) for pair in zip(self.joint_lower_limits, goal_lower_bound)])
-        b = np.array([max(pair) for pair in zip(self.joint_upper_limits, goal_upper_bound)])
+        a = np.array([max(pair) for pair in zip(self.joint_upper_limits, goal_upper_bound)])
+        b = np.array([min(pair) for pair in zip(self.joint_lower_limits, goal_lower_bound)])
 
         num_joint_limits = len(a)
         random_sample_near_goal = a + (np.random.sample(num_joint_limits) * (b - a))
@@ -252,6 +250,9 @@ class AdaRRT():
         norm_dir = (sample - neighbor.state) / dist
         new_node_pose = neighbor.state + norm_dir * self.step_size
 
+        if self._check_for_collision(new_node_pose):
+            return None
+
         new_node = AdaRRT.Node(new_node_pose, neighbor)
         neighbor.children.append(new_node)
         return new_node
@@ -266,7 +267,7 @@ class AdaRRT():
         # FILL in your code here
 
         dist_to_goal = self.dist(node.state, self.goal.state)
-        return dist_to_goal < self.goal_precision
+        return dist_to_goal <= self.goal_precision
 
     def _trace_path_from_start(self, node=None):
         """
@@ -285,7 +286,7 @@ class AdaRRT():
             path.append(curr_node.state)
             curr_node = curr_node.parent
 
-        path = path.reverse()
+        path.reverse()
         return path
 
     def _check_for_collision(self, sample):
