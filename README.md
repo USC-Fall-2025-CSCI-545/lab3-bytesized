@@ -17,12 +17,16 @@ The Lab 3 simulation supports both Python 2 and Python 3 implementations; howeve
 ---
 
 ## Question 4
+### Default
 ![Question 4 Default](./question-4-default.gif)
+### Top
 ![Question 4 Top](./question-4-top.gif)
 
 ---
 
 ## Question 5
+### Default
 ![Question 5 Default](./question-5-default.gif)
+### Top
 ![Question 5 Top](./question-5-top.gif)
 
