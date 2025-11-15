@@ -193,8 +193,8 @@ class AdaRRT():
         goal_lower_bound = np.array([val - bound_dist for val in goal])
 
         # To sample unif[b, a), multiply the output of random_sample by (b-a) and add a
-        a = np.array([min(pair) for pair in zip(self.joint_lower_limits, goal_lower_bound)])
-        b = np.array([max(pair) for pair in zip(self.joint_upper_limits, goal_upper_bound)])
+        a = np.maximum(self.joint_lower_limits, goal_lower_bound)
+        b = np.minimum(self.joint_upper_limits, goal_upper_bound)
 
         num_joint_limits = len(a)
         random_sample_near_goal = a + (np.random.sample(num_joint_limits) * (b - a))
@@ -312,8 +312,8 @@ def main(is_sim):
     ada = adapy.Ada(is_sim)
 
     armHome = [-1.5, 3.22, 1.23, -2.19, 1.8, 1.2]
-    # goalConfig = [-1.72, 4.44, 2.02, -2.04, 2.66, 1.39]
-    goalConfig = [-2.37, 3.81, 1.31, -0.05, 0.78, 0.25]
+    goalConfig = [-1.72, 4.44, 2.02, -2.04, 2.66, 1.39]
+    # goalConfig = [-2.37, 3.81, 1.31, -0.05, 0.78, 0.25]
     delta = 0.25
     eps = 0.2 # replace goal precision with 0.2
 
@@ -355,7 +355,7 @@ def main(is_sim):
         step_size=delta,
         goal_precision=eps)
 
-    rospy.sleep(1.0)
+    rospy.sleep(10.0)
 
     if not is_sim:
         ada.start_trajectory_executor()
