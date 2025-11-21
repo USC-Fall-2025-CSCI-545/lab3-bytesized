@@ -7,26 +7,3 @@ The demo script `adarrt.py` is written for Python 2 and is provided for referenc
 In Lab 3, both Python 2 and Python 3 versions of the script are already included in the Docker images provided (as referenced in the Overleaf file), depending on which version you choose to use.
 
 The Lab 3 simulation supports both Python 2 and Python 3 implementations; however, the real-world lab only supports Python 2.
-
-
-# Results for Questions 3, 4, and 5
-
-## Question 3
-![Question 3](./question-3.gif)
-
----
-
-## Question 4
-### Default
-![Question 4 Default](./question-4-default.gif)
-### Top
-![Question 4 Top](./question-4-top.gif)
-
----
-
-## Question 5
-### Default
-![Question 5 Default](./question-5-default.gif)
-### Top
-![Question 5 Top](./question-5-top.gif)
-
